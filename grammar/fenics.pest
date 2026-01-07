@@ -1,0 +1,318 @@
+WHITESPACE = _{ " " | "\t" }
+NEWLINE    = _{ "\r\n" | "\n" | "\r" }
+COMMENT    = _{ "//" ~ (!NEWLINE ~ ANY)* }
+
+// Integers support both integers and floating-point
+integer = @{ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT*)? }
+float   = @{ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
+
+// Strings are double-quoted
+string               = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+string_interpolation = @{ "\"" ~ ((!"\"" ~ ANY)* ~ ("#{" ~ expression ~ "}" ~ (!"\"" ~ ANY)*)*) ~ "\"" }
+
+// Identifiers start with letter or underscore, contain alphanumeric or underscore
+// Must not be a keyword
+identifier = @{
+    !keyword ~ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")*
+}
+
+// Keywords that cannot be used as identifiers
+keyword = @{
+    ("if" | "else" | "for" | "while" | "loop" | "fn" | "return" | "try" | "catch" | "const" | "mut" | "global" | "in" | "is" | "and" | "or" | "not" | "then" | "otherwise" | "true" | "false" | "null" | "undefined" | "nil" | "block" | "lib" | "import" | "as" | "Int" | "Float" | "String" | "Boolean" | "Bool" | "Array" | "Object" | "Regex" | "List" | "Pairs") ~ !(ASCII_ALPHANUMERIC | "_")
+}
+// Regular expression literals enclosed in forward slashes
+regex = @{ "/" ~ (!"/" ~ ANY)* ~ "/" }
+
+// Assignment operators
+assign     = { ":" }
+add_assign = { "+:" }
+sub_assign = { "-:" }
+mul_assign = { "*:" }
+div_assign = { "/:" }
+mod_assign = { "%:" }
+
+function_call = {
+    identifier ~ "(" ~ (expression ~ ("," ~ expression)*)? ~ ")"
+  | builtin_function_call
+}
+
+base_builtin_name = {
+    "len"
+  | "print"
+  | "input"
+  | "type"
+  | "str"
+  | "int"
+}
+
+boolean     = { "true" | "false" }
+not_defined = { "undefined" | "null" | "nil" }
+
+literal = {
+    integer
+  | string_interpolation
+  | string
+  | regex
+  | float
+  | boolean
+  | not_defined
+  | array_literal
+  | object_literal
+  | pairs_literal
+}
+
+// Keywords
+mut_keyword       = { "mut" }
+const_keyword     = { "const" }
+global_keyword    = { "global" }
+fn_keyword        = { "fn" }
+return_keyword    = { "return" }
+if_keyword        = { "if" }
+else_keyword      = { "else" }
+then_keyword      = { "then" }
+otherwise_keyword = { "otherwise" }
+for_keyword       = { "for" }
+in_keyword        = { "in" }
+while_keyword     = { "while" }
+loop_keyword      = { "loop" }
+block_keyword     = { "block" }
+try_keyword       = { "try" }
+catch_keyword     = { "catch" }
+
+// Basic types
+basic_type = {
+    "Int"
+  | "Float"
+  | "String"
+  | "Boolean"
+  | "Bool"
+  | "Array"
+  | "Object"
+  | "Regex"
+}
+
+// Generic types
+list_type  = { "List" ~ "(" ~ basic_type ~ ")" }
+pairs_type = { "Pairs" ~ "(" ~ basic_type ~ "," ~ basic_type ~ ")" }
+
+type = { list_type | pairs_type | basic_type }
+
+// Ephemeral variables
+ephemeral_var = { "#" ~ (identifier | ASCII_DIGIT+) }
+
+const_definition = {
+    (type)? ~ const_keyword ~ identifier ~ ":" ~ expression
+}
+
+mutable_definition = {
+    (type)? ~ mut_keyword? ~ identifier ~ ":" ~ expression
+}
+
+global_mutable_definition = {
+    global_keyword ~ mut_keyword? ~ identifier ~ ":" ~ expression
+}
+
+global_const_definition = {
+    global_keyword ~ const_keyword ~ identifier ~ ":" ~ expression
+}
+
+// Pairs/object literal with dashes
+pairs_item = { "-" ~ (string | identifier) ~ ":" ~ expression ~ ","? }
+
+pairs_literal = {
+    NEWLINE+ ~ pairs_item ~ (NEWLINE* ~ &"-" ~ pairs_item)*
+}
+
+// Array literal
+array_literal = {
+    "[" ~ (expression ~ ("," ~ expression)*)? ~ "]"
+}
+
+// Object literal
+object_literal = {
+    identifier ~ ":" ~ pairs_literal
+}
+
+// Array/object access
+bracket_access = {
+    identifier ~ "[" ~ expression ~ "]"
+}
+
+// Property access (e.g., person.age, "Sample".length, [1,2].length)
+dot_access = {
+    (identifier | string | string_interpolation | array_literal) ~ "." ~ (identifier | builtin_property_name)
+}
+
+builtin_property_name = {
+    "length"
+  | "first"
+  | "last"
+}
+
+builtin_array_method = {
+    "sort"
+  | "reverse"
+  | "has"
+  | "keys"
+  | "split"
+}
+
+builtin_function_call = {
+    base_builtin_name ~ "(" ~ (expression ~ ("," ~ expression)*)? ~ ")"
+}
+
+// Method calls (e.g., numbers.reverse(), "text".split(" "), [1,2].sort())
+method_call = {
+    (identifier | string | string_interpolation | array_literal) ~ "." ~ (builtin_array_method | identifier) ~ "(" ~ (expression ~ ("," ~ expression)*)? ~ ")"
+}
+
+// Library export list at end of a library file
+lib_keyword    = { "lib" }
+import_keyword = { "import" }
+as_keyword     = { "as" }
+
+lib_item = { "-" ~ identifier }
+
+lib_export = {
+    lib_keyword ~ identifier ~ ":" ~ NEWLINE ~ (lib_item ~ NEWLINE)*
+}
+
+import_stmt = {
+    import_keyword ~ (string | identifier) ~ (as_keyword ~ identifier)?
+}
+
+// Function definition
+function_def = {
+    fn_keyword ~ identifier ~ "(" ~ (parameter ~ ("," ~ parameter)*)? ~ ")" ~ ("->" ~ type)? ~ ":" ~ block
+}
+
+parameter = {
+    identifier ~ (":" ~ type)?
+}
+
+// Return statement
+return_stmt = {
+    return_keyword ~ expression?
+}
+
+// For loop
+for_loop = {
+    for_keyword ~ (identifier ~ "," ~ identifier | identifier) ~ in_keyword ~ expression ~ ":" ~ block
+}
+
+// While loop
+while_loop = {
+    while_keyword ~ expression ~ ":" ~ block
+}
+
+// Loop statement
+loop_stmt = {
+    loop_keyword ~ expression ~ ":" ~ block
+}
+
+// If statement
+if_stmt = {
+    if_keyword ~ expression ~ ":" ~ (block | statement) ~ (else_keyword ~ if_keyword ~ expression ~ ":" ~ (block | statement))* ~ (else_keyword ~ ":" ~ (block | statement))?
+}
+
+// Ternary operator (two variants)
+ternary_then = {
+    if_keyword ~ expression ~ then_keyword ~ expression ~ otherwise_keyword ~ expression
+}
+
+ternary_qmark = {
+    binary_expression ~ "?" ~ expression ~ ":" ~ expression
+}
+
+// Ephemeral assignment (e.g., explicitFloat#tempVar assigns to #tempVar)
+ephemeral_assignment = {
+    (identifier | literal) ~ ephemeral_var
+}
+
+primary_expression = {
+    method_call
+  | dot_access
+  | bracket_access
+  | function_call
+  | ephemeral_assignment
+  | literal
+  | ephemeral_var
+  | identifier
+}
+
+// Try-catch block
+try_catch = {
+    try_keyword ~ ":" ~ block ~ catch_keyword ~ "(" ~ identifier ~ ")" ~ (":")? ~ block
+}
+
+// Increment/decrement statement
+increment_stmt = {
+    (identifier | dot_access | bracket_access) ~ ("++" | "--")
+}
+
+// Assignment to properties or variables
+assignment = {
+    (dot_access | bracket_access | identifier) ~ (assign | add_assign | sub_assign | mul_assign | div_assign | mod_assign) ~ expression
+}
+
+// Block statement
+block = {
+    NEWLINE ~ (statement ~ NEWLINE)*
+}
+
+statement = {
+    global_const_definition
+  | global_mutable_definition
+  | const_definition
+  | mutable_definition
+  | assignment
+  | increment_stmt
+  | function_def
+  | if_stmt
+  | for_loop
+  | while_loop
+  | loop_stmt
+  | try_catch
+  | return_stmt
+  | lib_export
+  | import_stmt
+  | block_keyword ~ expression
+  | expression
+}
+
+// Binary operators
+binary_op = {
+    "==="
+  | "=="
+  | "!=="
+  | "!="
+  | "<="
+  | ">="
+  | "<"
+  | ">"
+  | "is not"
+  | "is"
+  | "and"
+  | "or"
+  | "+"
+  | "-"
+  | "*"
+  | "/"
+  | "%"
+  | "^"
+  | "**"
+}
+
+// Binary expression with operators
+binary_expression = {
+    primary_expression ~ (binary_op ~ primary_expression)*
+}
+
+expression = {
+    binary_expression
+}
+
+// Root program
+main = {
+    SOI ~ NEWLINE* ~ (statement ~ ";"? ~ NEWLINE+)* ~ (statement ~ ";"?)? ~ EOI
+}

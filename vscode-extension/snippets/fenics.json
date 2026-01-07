@@ -1,0 +1,192 @@
+{
+  "Constant Variable": {
+    "prefix": "const",
+    "body": ["const ${1:name}: ${2:value}"],
+    "description": "Create a constant variable"
+  },
+  "Mutable Variable": {
+    "prefix": "var",
+    "body": ["${1:name}: ${2:value}"],
+    "description": "Create a mutable variable"
+  },
+  "Typed Constant": {
+    "prefix": "tconst",
+    "body": [
+      "${1|Int,Float,String,Boolean,Array,Object|} const ${2:name}: ${3:value}"
+    ],
+    "description": "Create a typed constant variable"
+  },
+  "Typed Mutable": {
+    "prefix": "tvar",
+    "body": [
+      "${1|Int,Float,String,Boolean,Array,Object|} ${2:name}: ${3:value}"
+    ],
+    "description": "Create a typed mutable variable"
+  },
+  "Global Variable": {
+    "prefix": "global",
+    "body": ["global ${1:name}: ${2:value}"],
+    "description": "Create a global variable"
+  },
+  "Function": {
+    "prefix": "fn",
+    "body": [
+      "fn ${1:name}(${2:params}) -> ${3:ReturnType}:",
+      "\t${4:// function body}",
+      "\treturn ${5:value}"
+    ],
+    "description": "Create a function"
+  },
+  "Function No Return": {
+    "prefix": "fnv",
+    "body": ["fn ${1:name}(${2:params}):", "\t${3:// function body}"],
+    "description": "Create a function without return type"
+  },
+  "For Loop": {
+    "prefix": "for",
+    "body": ["for ${1:item} in ${2:collection}:", "\t${3:// loop body}"],
+    "description": "Create a for loop"
+  },
+  "For Loop Key-Value": {
+    "prefix": "forkv",
+    "body": [
+      "for ${1:key}, ${2:value} in ${3:collection}:",
+      "\t${4:// loop body}"
+    ],
+    "description": "Create a for loop with key and value"
+  },
+  "While Loop": {
+    "prefix": "while",
+    "body": ["while ${1:condition}:", "\t${2:// loop body}"],
+    "description": "Create a while loop"
+  },
+  "Loop": {
+    "prefix": "loop",
+    "body": ["loop ${1:condition}:", "\t${2:// loop body}"],
+    "description": "Create a loop that activates on condition"
+  },
+  "If Statement": {
+    "prefix": "if",
+    "body": ["if ${1:condition}:", "\t${2:// if body}"],
+    "description": "Create an if statement"
+  },
+  "If-Else Statement": {
+    "prefix": "ifelse",
+    "body": [
+      "if ${1:condition}:",
+      "\t${2:// if body}",
+      "else:",
+      "\t${3:// else body}"
+    ],
+    "description": "Create an if-else statement"
+  },
+  "If-ElseIf-Else Statement": {
+    "prefix": "ifelif",
+    "body": [
+      "if ${1:condition1}:",
+      "\t${2:// if body}",
+      "else if ${3:condition2}:",
+      "\t${4:// else if body}",
+      "else:",
+      "\t${5:// else body}"
+    ],
+    "description": "Create an if-elseif-else statement"
+  },
+  "Ternary (then/otherwise)": {
+    "prefix": "tern",
+    "body": ["if ${1:condition} then ${2:trueValue} otherwise ${3:falseValue}"],
+    "description": "Create a ternary expression with then/otherwise"
+  },
+  "Ternary (?:)": {
+    "prefix": "ternary",
+    "body": ["${1:condition} ? ${2:trueValue} : ${3:falseValue}"],
+    "description": "Create a ternary expression with ? :"
+  },
+  "Try-Catch": {
+    "prefix": "try",
+    "body": [
+      "try:",
+      "\t${1:// try body}",
+      "catch (${2:err})",
+      "\t${3:// catch body}"
+    ],
+    "description": "Create a try-catch block"
+  },
+  "Print": {
+    "prefix": "print",
+    "body": ["print(${1:value})"],
+    "description": "Print to console"
+  },
+  "Print Interpolated": {
+    "prefix": "printi",
+    "body": ["print(\"${1:text} \\#{${2:variable}}\")"],
+    "description": "Print with string interpolation"
+  },
+  "String Interpolation": {
+    "prefix": "interp",
+    "body": ["\"${1:text} \\#{${2:variable}}\""],
+    "description": "String interpolation"
+  },
+  "Array Literal": {
+    "prefix": "arr",
+    "body": ["[${1:items}]"],
+    "description": "Create an array literal"
+  },
+  "List Type": {
+    "prefix": "list",
+    "body": ["List(${1|Int,Float,String,Boolean|}) ${2:name}: [${3:items}]"],
+    "description": "Create a typed list"
+  },
+  "Object Literal": {
+    "prefix": "obj",
+    "body": ["${1:name}:", "\t- ${2:key}: ${3:value},"],
+    "description": "Create an object literal"
+  },
+  "Pairs Type": {
+    "prefix": "pairs",
+    "body": [
+      "Pairs(${1|String,Int,Float|}, ${2|String,Int,Float,Boolean|}) ${3:name}:",
+      "\t- ${4:key}: ${5:value},"
+    ],
+    "description": "Create a Pairs collection"
+  },
+  "Return": {
+    "prefix": "ret",
+    "body": ["return ${1:value}"],
+    "description": "Return statement"
+  },
+  "Block": {
+    "prefix": "block",
+    "body": ["block ${1:expression}"],
+    "description": "Block keyword to prevent further effects"
+  },
+  "Comment": {
+    "prefix": "//",
+    "body": ["// ${1:comment}"],
+    "description": "Single line comment"
+  },
+  "Library Export": {
+    "prefix": "lib",
+    "body": [
+      "lib ${1:moduleName}:",
+      "\t- ${2:function1}",
+      "\t- ${3:function2}"
+    ],
+    "description": "Define a library module with exports"
+  },
+  "Import Module": {
+    "prefix": "import",
+    "body": ["import ${1:moduleName}"],
+    "description": "Import a module"
+  },
+  "Import with Alias": {
+    "prefix": "importas",
+    "body": ["import ${1:moduleName} as ${2:alias}"],
+    "description": "Import a module with an alias"
+  },
+  "Import from Path": {
+    "prefix": "importpath",
+    "body": ["import \"${1:./path/to/module}\""],
+    "description": "Import a module from a specific path"
+  }
+}

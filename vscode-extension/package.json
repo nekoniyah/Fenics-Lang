@@ -1,0 +1,58 @@
+{
+  "name": "fenics-lang",
+  "displayName": "Fenics Language Support",
+  "description": "Syntax highlighting, snippets, and IntelliSense for Fenics programming language",
+  "version": "0.1.0",
+  "publisher": "fenics",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "fenics",
+    "syntax highlighting",
+    "intellisense"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "fenics",
+        "aliases": [
+          "Fenics",
+          "fenics"
+        ],
+        "extensions": [
+          ".fenics"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icon.png",
+          "dark": "./icon.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "fenics",
+        "scopeName": "source.fenics",
+        "path": "./syntaxes/fenics.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "fenics",
+        "path": "./snippets/fenics.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "fenics.refreshIndex",
+        "title": "Fenics: Refresh Module Index"
+      }
+    ]
+  }
+}
