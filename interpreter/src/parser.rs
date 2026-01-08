@@ -828,7 +828,7 @@ fn parse_array_literal(pair: pest::iterators::Pair<Rule>) -> Result<Expression, 
 }
 
 fn parse_object_literal(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
-    let mut properties = HashMap::new();
+    let properties = HashMap::new();
 
     for inner in pair.into_inner() {
         match inner.as_rule() {
