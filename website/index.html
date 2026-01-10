@@ -137,7 +137,7 @@
 <span class="keyword">const</span> <span class="variable">age</span> <span class="operator">:</span> <span class="number">25</span>
 
 <span class="comment">// Mutable variables</span>
-<span class="keyword">mut</span> <span class="variable">counter</span> <span class="operator">:</span> <span class="number">0</span>
+<span class="variable">counter</span> <span class="operator">:</span> <span class="number">0</span>
 counter <span class="operator">+:</span> <span class="number">1</span>  <span class="comment">// Add-assign</span>
 
 <span class="comment">// String interpolation</span>
@@ -153,12 +153,11 @@ counter <span class="operator">+:</span> <span class="number">1</span>  <span cl
                 <span class="code-title">functions.fenics</span>
               </div>
               <pre><code class="fenics"><span class="comment">// Function definition</span>
-<span class="keyword">fn</span> <span class="function">add</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+<span class="keyword">fn</span> <span class="function">add</span>(<span class="variable">a</span>, <span class="variable">b</span>):
     <span class="keyword">return</span> a <span class="operator">+</span> b
-}
 
 <span class="comment">// Arrow functions</span>
-<span class="keyword">const</span> <span class="variable">multiply</span> <span class="operator">:</span> <span class="keyword">fn</span>(<span class="variable">x</span>, <span class="variable">y</span>) <span class="operator">=></span> x <span class="operator">*</span> y
+<span class="keyword">const</span> <span class="variable">multiply</span> <span class="operator">:</span> <span class="keyword">fn</span>(<span class="variable">x</span>, <span class="variable">y</span>) <span class="operator">:</span> x <span class="operator">*</span> y
 
 <span class="comment">// Using functions</span>
 <span class="keyword">const</span> <span class="variable">result</span> <span class="operator">:</span> <span class="function">add</span>(<span class="number">5</span>, <span class="number">3</span>)
@@ -174,16 +173,15 @@ counter <span class="operator">+:</span> <span class="number">1</span>  <span cl
                 <span class="code-title">loops.fenics</span>
               </div>
               <pre><code class="fenics"><span class="comment">// For loop</span>
-<span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="operator">..</span><span class="number">5</span> {
+<span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="operator">..</span><span class="number">5</span>:
     <span class="builtin">print</span>(<span class="string">"Iteration #{i}"</span>)
-}
 
 <span class="comment">// While loop</span>
-<span class="keyword">mut</span> <span class="variable">count</span> <span class="operator">:</span> <span class="number">0</span>
-<span class="keyword">while</span> count <span class="operator">&lt;</span> <span class="number">3</span> {
+<span class="variable">count</span> <span class="operator">:</span> <span class="number">0</span>
+<span class="keyword">while</span> count <span class="operator">&lt;</span> <span class="number">3</span>:
     <span class="builtin">print</span>(count)
     count <span class="operator">+:</span> <span class="number">1</span>
-}</code></pre>
+</code></pre>
             </div>
           </div>
           <div class="tab-pane" id="arrays">
@@ -219,17 +217,16 @@ counter <span class="operator">+:</span> <span class="number">1</span>  <span cl
             </div>
             <textarea id="codeEditor" class="code-editor" spellcheck="false">
 // Try Fenics in your browser!
-fn fibonacci(n) {
+fn fibonacci(n):
     if n <= 1 {
         return n
     }
     return fibonacci(n - 1) + fibonacci(n - 2)
-}
 
 print("Fibonacci sequence:")
-for i in 0..10 {
+for i in 0..10:
     print("F(#{i}) = #{fibonacci(i)}")
-}</textarea
+</textarea
             >
           </div>
           <div class="output-section">
