@@ -1,0 +1,131 @@
+/* Syntax Highlighting for Fenics */
+
+.fenics .keyword {
+    color: #c792ea;
+    font-weight: 600;
+}
+
+.fenics .function {
+    color: #82aaff;
+}
+
+.fenics .builtin {
+    color: #f78c6c;
+    font-style: italic;
+}
+
+.fenics .string {
+    color: #c3e88d;
+}
+
+.fenics .number {
+    color: #f78c6c;
+}
+
+.fenics .comment {
+    color: #546e7a;
+    font-style: italic;
+}
+
+.fenics .variable {
+    color: #eeffff;
+}
+
+.fenics .operator {
+    color: #89ddff;
+}
+
+.fenics .type {
+    color: #ffcb6b;
+}
+
+.fenics .punctuation {
+    color: #89ddff;
+}
+
+.fenics .property {
+    color: #f07178;
+}
+
+.fenics .constant {
+    color: #c792ea;
+}
+
+.fenics .regex {
+    color: #f78c6c;
+}
+
+.fenics .escape {
+    color: #c792ea;
+}
+
+/* Alternative color schemes */
+.code-window.light {
+    background: #ffffff;
+}
+
+.code-window.light .keyword {
+    color: #0000ff;
+}
+
+.code-window.light .string {
+    color: #a31515;
+}
+
+.code-window.light .comment {
+    color: #008000;
+}
+
+.code-window.light .function {
+    color: #795e26;
+}
+
+.code-window.light code {
+    color: #000000;
+}
+
+/* Code block animations */
+.code-window pre code {
+    display: block;
+    animation: codeReveal 0.5s ease-out;
+}
+
+@keyframes codeReveal {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Inline code */
+code:not(.fenics) {
+    background: var(--bg-lighter);
+    color: var(--primary-light);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', Consolas, Monaco, monospace;
+    font-size: 0.875em;
+}
+
+/* Line numbers (optional enhancement) */
+.code-window.line-numbers pre {
+    counter-reset: line;
+}
+
+.code-window.line-numbers pre code {
+    counter-increment: line;
+}
+
+.code-window.line-numbers pre code::before {
+    content: counter(line);
+    display: inline-block;
+    width: 2em;
+    margin-right: 1em;
+    text-align: right;
+    color: var(--text-muted);
+    user-select: none;
+}

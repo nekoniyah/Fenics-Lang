@@ -1,7 +1,11 @@
 use crate::ast::*;
+use crate::utils::{
+    ast::{parse_array_literal, parse_object_literal, parse_pairs_literal},
+    string_interpolation::parse_string_interpolation,
+    type_finder::parse_type,
+};
 use pest::Parser;
 use pest_derive::Parser;
-use std::collections::HashMap;
 
 #[derive(Parser)]
 #[grammar = "../grammar/fenics.pest"]
@@ -502,7 +506,7 @@ fn parse_block(pair: pest::iterators::Pair<Rule>) -> Result<Vec<Statement>, Stri
     Ok(statements)
 }
 
-fn parse_expression(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
+pub(crate) fn parse_expression(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
     let inner = pair.into_inner().next();
 
     if inner.is_none() {
@@ -512,8 +516,6 @@ fn parse_expression(pair: pest::iterators::Pair<Rule>) -> Result<Expression, Str
     let inner = inner.unwrap();
 
     match inner.as_rule() {
-        Rule::ternary_then => parse_ternary_then(inner),
-        Rule::ternary_qmark => parse_ternary_qmark(inner),
         Rule::binary_expression => parse_binary_expression(inner),
         Rule::primary_expression => parse_primary_expression(inner),
         _ => Err(format!("Unexpected expression rule: {:?}", inner.as_rule())),
@@ -680,32 +682,6 @@ fn parse_primary_expression(pair: pest::iterators::Pair<Rule>) -> Result<Express
     }
 }
 
-fn parse_ternary_then(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
-    let mut parts = pair.into_inner();
-    let condition = parse_primary_expression(parts.next().unwrap())?;
-    let true_expr = parse_primary_expression(parts.next().unwrap())?;
-    let false_expr = parse_primary_expression(parts.next().unwrap())?;
-
-    Ok(Expression::TernaryThen {
-        condition: Box::new(condition),
-        true_expr: Box::new(true_expr),
-        false_expr: Box::new(false_expr),
-    })
-}
-
-fn parse_ternary_qmark(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
-    let mut parts = pair.into_inner();
-    let condition = parse_primary_expression(parts.next().unwrap())?;
-    let true_expr = parse_primary_expression(parts.next().unwrap())?;
-    let false_expr = parse_primary_expression(parts.next().unwrap())?;
-
-    Ok(Expression::TernaryQuestion {
-        condition: Box::new(condition),
-        true_expr: Box::new(true_expr),
-        false_expr: Box::new(false_expr),
-    })
-}
-
 fn parse_literal(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
     let inner = pair.into_inner().next().unwrap();
 
@@ -750,128 +726,6 @@ fn parse_literal(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String
         Rule::pairs_literal => parse_pairs_literal(inner),
         _ => Err(format!("Unexpected literal rule: {:?}", inner.as_rule())),
     }
-}
-
-fn parse_string_interpolation(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
-    let s = pair.as_str();
-    let content = &s[1..s.len() - 1]; // Remove quotes
-
-    let mut parts = Vec::new();
-    let mut current_text = String::new();
-    let mut chars = content.chars().peekable();
-
-    while let Some(ch) = chars.next() {
-        if ch == '#' {
-            if let Some(&'{') = chars.peek() {
-                chars.next(); // consume '{'
-
-                // Save any text we've accumulated
-                if !current_text.is_empty() {
-                    parts.push(StringPart::Text(current_text.clone()));
-                    current_text.clear();
-                }
-
-                // Find the closing brace
-                let mut expr_str = String::new();
-                let mut depth = 1;
-                while let Some(ch) = chars.next() {
-                    if ch == '{' {
-                        depth += 1;
-                        expr_str.push(ch);
-                    } else if ch == '}' {
-                        depth -= 1;
-                        if depth == 0 {
-                            break;
-                        }
-                        expr_str.push(ch);
-                    } else {
-                        expr_str.push(ch);
-                    }
-                }
-
-                // Parse the expression
-                let expr_pairs = FenicsParser::parse(Rule::expression, &expr_str)
-                    .map_err(|e| format!("Error parsing interpolation expression: {}", e))?;
-                let expr_pair = expr_pairs
-                    .into_iter()
-                    .next()
-                    .ok_or("No expression found in interpolation")?;
-                parts.push(StringPart::Expression(Box::new(parse_expression(
-                    expr_pair,
-                )?)));
-            } else {
-                current_text.push(ch);
-            }
-        } else {
-            current_text.push(ch);
-        }
-    }
-
-    // Add any remaining text
-    if !current_text.is_empty() {
-        parts.push(StringPart::Text(current_text));
-    }
-
-    Ok(Expression::StringInterpolation { parts })
-}
-
-fn parse_array_literal(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
-    let mut elements = Vec::new();
-
-    for inner in pair.into_inner() {
-        if inner.as_rule() == Rule::expression {
-            elements.push(parse_expression(inner)?);
-        }
-    }
-
-    Ok(Expression::Literal(Literal::Array(elements)))
-}
-
-fn parse_object_literal(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
-    let properties = HashMap::new();
-
-    for inner in pair.into_inner() {
-        match inner.as_rule() {
-            Rule::identifier => {} // Skip the identifier name
-            Rule::pairs_literal => {
-                return parse_pairs_literal(inner);
-            }
-            _ => {}
-        }
-    }
-
-    Ok(Expression::Literal(Literal::Object(properties)))
-}
-
-fn parse_pairs_literal(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
-    let mut properties = HashMap::new();
-
-    for pair_item in pair.into_inner() {
-        if pair_item.as_rule() == Rule::pairs_item {
-            let mut key = String::new();
-            let mut value = None;
-
-            for item in pair_item.into_inner() {
-                match item.as_rule() {
-                    Rule::string => {
-                        let s = item.as_str();
-                        key = s[1..s.len() - 1].to_string();
-                    }
-                    Rule::identifier => {
-                        key = item.as_str().to_string();
-                    }
-                    Rule::expression => value = Some(parse_expression(item)?),
-                    _ => {}
-                }
-            }
-
-            if let Some(v) = value {
-                properties.insert(key, v);
-            }
-        }
-    }
-
-    Ok(Expression::Literal(Literal::Object(properties)))
 }
 
 fn parse_function_call(pair: pest::iterators::Pair<Rule>) -> Result<Expression, String> {
@@ -991,40 +845,4 @@ fn parse_bracket_access(pair: pest::iterators::Pair<Rule>) -> Result<Expression,
         object: object.ok_or("Missing object in bracket access")?,
         index: index.ok_or("Missing index in bracket access")?,
     })
-}
-
-fn parse_type(pair: pest::iterators::Pair<Rule>) -> Result<Type, String> {
-    let span = pair.as_span();
-    let inner = pair
-        .into_inner()
-        .next()
-        .ok_or_else(|| format!("Empty type at {:?}", span))?;
-
-    match inner.as_rule() {
-        Rule::basic_type => parse_basic_type(&inner),
-        Rule::list_type => {
-            let inner_type = inner.into_inner().next().unwrap();
-            Ok(Type::List(Box::new(parse_basic_type(&inner_type)?)))
-        }
-        Rule::pairs_type => {
-            let mut types = inner.into_inner();
-            let key_type = parse_basic_type(&types.next().unwrap())?;
-            let value_type = parse_basic_type(&types.next().unwrap())?;
-            Ok(Type::Pairs(Box::new(key_type), Box::new(value_type)))
-        }
-        _ => Err("Unexpected type rule".to_string()),
-    }
-}
-
-fn parse_basic_type(pair: &pest::iterators::Pair<Rule>) -> Result<Type, String> {
-    match pair.as_str() {
-        "Int" => Ok(Type::Int),
-        "Float" => Ok(Type::Float),
-        "String" => Ok(Type::String),
-        "Boolean" | "Bool" => Ok(Type::Boolean),
-        "Array" => Ok(Type::Array),
-        "Object" => Ok(Type::Object),
-        "Regex" => Ok(Type::Regex),
-        _ => Err(format!("Unknown type: {}", pair.as_str())),
-    }
 }

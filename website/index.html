@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fenics Lang - A Modern Programming Language</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="styles/syntax.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <span class="logo">Fenics</span>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="#home" class="nav-link active">Home</a></li>
+          <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="#docs" class="nav-link">Documentation</a></li>
+          <li><a href="#playground" class="nav-link">Playground</a></li>
+          <li>
+            <a href="https://github.com" target="_blank" class="nav-link"
+              >GitHub</a
+            >
+          </li>
+        </ul>
+        <button class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            Welcome to <span class="gradient-text">Fenics</span>
+          </h1>
+          <p class="hero-subtitle">
+            A modern, expressive programming language designed for clarity and
+            performance
+          </p>
+          <div class="hero-buttons">
+            <a href="#docs" class="btn btn-primary">Get Started</a>
+            <a href="#playground" class="btn btn-secondary">Try Online</a>
+          </div>
+        </div>
+        <div class="hero-code">
+          <div class="code-window">
+            <div class="code-header">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+              <span class="code-title">hello.fenics</span>
+            </div>
+            <pre><code class="fenics"><span class="comment">// Welcome to Fenics!</span>
+<span class="keyword">fn</span> <span class="function">greet</span>(<span class="variable">name</span>) {
+    <span class="builtin">print</span>(<span class="string">"Hello, #{name}!"</span>)
+}
+
+<span class="keyword">const</span> <span class="variable">user</span> <span class="operator">:</span> <span class="string">"World"</span>
+<span class="function">greet</span>(user)</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+      <div class="container">
+        <h2 class="section-title">Why Fenics?</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Fast & Efficient</h3>
+            <p>
+              Optimized interpreter with minimal overhead for rapid execution
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Simple Syntax</h3>
+            <p>
+              Clean, intuitive syntax that's easy to learn and pleasant to write
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔧</div>
+            <h3>Built-in Features</h3>
+            <p>Rich standard library with powerful built-in functions</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3>String Interpolation</h3>
+            <p>Native support for elegant string interpolation with #{}</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔄</div>
+            <h3>Flexible Types</h3>
+            <p>Dynamic typing with type annotations for clarity when needed</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3>Module System</h3>
+            <p>Import and organize code with a clean module system</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Code Examples Section -->
+    <section id="docs" class="examples">
+      <div class="container">
+        <h2 class="section-title">Quick Start</h2>
+        <div class="examples-tabs">
+          <button class="tab-btn active" data-tab="variables">Variables</button>
+          <button class="tab-btn" data-tab="functions">Functions</button>
+          <button class="tab-btn" data-tab="loops">Loops</button>
+          <button class="tab-btn" data-tab="arrays">Arrays</button>
+        </div>
+        <div class="tab-content">
+          <div class="tab-pane active" id="variables">
+            <div class="code-window">
+              <div class="code-header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="code-title">variables.fenics</span>
+              </div>
+              <pre><code class="fenics"><span class="comment">// Constant variables (immutable)</span>
+<span class="keyword">const</span> <span class="variable">name</span> <span class="operator">:</span> <span class="string">"Alice"</span>
+<span class="keyword">const</span> <span class="variable">age</span> <span class="operator">:</span> <span class="number">25</span>
+
+<span class="comment">// Mutable variables</span>
+<span class="keyword">mut</span> <span class="variable">counter</span> <span class="operator">:</span> <span class="number">0</span>
+counter <span class="operator">+:</span> <span class="number">1</span>  <span class="comment">// Add-assign</span>
+
+<span class="comment">// String interpolation</span>
+<span class="builtin">print</span>(<span class="string">"#{name} is #{age} years old"</span>)</code></pre>
+            </div>
+          </div>
+          <div class="tab-pane" id="functions">
+            <div class="code-window">
+              <div class="code-header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="code-title">functions.fenics</span>
+              </div>
+              <pre><code class="fenics"><span class="comment">// Function definition</span>
+<span class="keyword">fn</span> <span class="function">add</span>(<span class="variable">a</span>, <span class="variable">b</span>) {
+    <span class="keyword">return</span> a <span class="operator">+</span> b
+}
+
+<span class="comment">// Arrow functions</span>
+<span class="keyword">const</span> <span class="variable">multiply</span> <span class="operator">:</span> <span class="keyword">fn</span>(<span class="variable">x</span>, <span class="variable">y</span>) <span class="operator">=></span> x <span class="operator">*</span> y
+
+<span class="comment">// Using functions</span>
+<span class="keyword">const</span> <span class="variable">result</span> <span class="operator">:</span> <span class="function">add</span>(<span class="number">5</span>, <span class="number">3</span>)
+<span class="builtin">print</span>(<span class="string">"Result: #{result}"</span>)</code></pre>
+            </div>
+          </div>
+          <div class="tab-pane" id="loops">
+            <div class="code-window">
+              <div class="code-header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="code-title">loops.fenics</span>
+              </div>
+              <pre><code class="fenics"><span class="comment">// For loop</span>
+<span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="operator">..</span><span class="number">5</span> {
+    <span class="builtin">print</span>(<span class="string">"Iteration #{i}"</span>)
+}
+
+<span class="comment">// While loop</span>
+<span class="keyword">mut</span> <span class="variable">count</span> <span class="operator">:</span> <span class="number">0</span>
+<span class="keyword">while</span> count <span class="operator">&lt;</span> <span class="number">3</span> {
+    <span class="builtin">print</span>(count)
+    count <span class="operator">+:</span> <span class="number">1</span>
+}</code></pre>
+            </div>
+          </div>
+          <div class="tab-pane" id="arrays">
+            <div class="code-window">
+              <div class="code-header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="code-title">arrays.fenics</span>
+              </div>
+              <pre><code class="fenics"><span class="comment">// Array creation</span>
+<span class="keyword">const</span> <span class="variable">numbers</span> <span class="operator">:</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+<span class="keyword">const</span> <span class="variable">names</span> <span class="operator">:</span> [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Charlie"</span>]
+
+<span class="comment">// Array operations</span>
+<span class="builtin">print</span>(<span class="string">"Length: #{</span><span class="builtin">len</span>(numbers)<span class="string">}"</span>)
+<span class="builtin">print</span>(<span class="string">"First: #{numbers[0]}"</span>)</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Playground Section -->
+    <section id="playground" class="playground">
+      <div class="container">
+        <h2 class="section-title">Try It Online</h2>
+        <div class="playground-container">
+          <div class="editor-section">
+            <div class="editor-header">
+              <span class="editor-label">Code Editor</span>
+              <button class="btn-small" id="runBtn">▶ Run</button>
+            </div>
+            <textarea id="codeEditor" class="code-editor" spellcheck="false">
+// Try Fenics in your browser!
+fn fibonacci(n) {
+    if n <= 1 {
+        return n
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+print("Fibonacci sequence:")
+for i in 0..10 {
+    print("F(#{i}) = #{fibonacci(i)}")
+}</textarea
+            >
+          </div>
+          <div class="output-section">
+            <div class="output-header">
+              <span class="output-label">Output</span>
+              <button class="btn-small" id="clearBtn">Clear</button>
+            </div>
+            <pre id="output" class="output-display">
+Click "Run" to execute your code...</pre
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>Fenics Lang</h3>
+            <p>
+              A modern programming language for the next generation of
+              developers.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#docs">Documentation</a></li>
+              <li><a href="#playground">Playground</a></li>
+              <li><a href="#features">Features</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Community</h4>
+            <ul>
+              <li><a href="#">GitHub</a></li>
+              <li><a href="#">Discord</a></li>
+              <li><a href="#">Twitter</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>About</h4>
+            <ul>
+              <li><a href="#">License</a></li>
+              <li><a href="#">Contributing</a></li>
+              <li><a href="#">Changelog</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 Fenics Lang. Made with ❤️ for developers.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/tabs.js"></script>
+    <script src="js/playground.js"></script>
+  </body>
+</html>
